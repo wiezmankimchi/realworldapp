@@ -1,5 +1,7 @@
 import { AuthenticationError, ForbiddenError } from '@redwoodjs/graphql-server'
 import { db } from './db'
+import { logger } from 'src/lib/logger'
+
 
 /**
  * The session object sent in as the first argument to getCurrentUser() will
@@ -18,11 +20,27 @@ import { db } from './db'
  * fields to the `select` object below once you've decided they are safe to be
  * seen if someone were to open the Web Inspector in their browser.
  */
-export const getCurrentUser = async (session) => {
-  return await db.user.findUnique({
+export const getCurrentUser = async ( session ) => {
+  logger.info(`getCurrentuser --> session ${JSON.stringify(session)}`)
+  const userRoles = await db.userRole.findMany( {
+    where: { userId: session.id },
+    select: { name: true },
+  } )
+  logger.info(`getCurrentuser --> userRoles ${JSON.stringify(userRoles)}`)
+
+  const roles = userRoles.map( ( role ) => {
+    return role.name
+  } )
+  logger.info(`getCurrentuser --> roles ${JSON.stringify(roles)}`)
+
+  const user = await db.user.findUnique( {
     where: { id: session.id },
-    select: { id: true, email:true, name:true },
-  })
+    select: { id: true, email: true, firstName: true, lastName: true },
+  } )
+  // logger.info(`getCurrentuser --> user ${JSON.stringify(user)}`)
+  // logger.info(`getCurrentuser --> user||roles ${JSON.stringify(user)||JSON.stringify(roles)}`)
+
+  return {...user,roles}
 }
 
 /**
@@ -47,33 +65,33 @@ export const isAuthenticated = () => {
  * @returns {boolean} - Returns true if the currentUser is logged in and assigned one of the given roles,
  * or when no roles are provided to check against. Otherwise returns false.
  */
-export const hasRole = (roles) => {
-  if (!isAuthenticated()) {
+export const hasRole = ( roles ) => {
+  if ( !isAuthenticated() ) {
     return false
   }
 
   const currentUserRoles = context.currentUser?.roles
 
-  if (typeof roles === 'string') {
-    if (typeof currentUserRoles === 'string') {
+  if ( typeof roles === 'string' ) {
+    if ( typeof currentUserRoles === 'string' ) {
       // roles to check is a string, currentUser.roles is a string
       return currentUserRoles === roles
-    } else if (Array.isArray(currentUserRoles)) {
+    } else if ( Array.isArray( currentUserRoles ) ) {
       // roles to check is a string, currentUser.roles is an array
-      return currentUserRoles?.some((allowedRole) => roles === allowedRole)
+      return currentUserRoles?.some( ( allowedRole ) => roles === allowedRole )
     }
   }
 
-  if (Array.isArray(roles)) {
-    if (Array.isArray(currentUserRoles)) {
+  if ( Array.isArray( roles ) ) {
+    if ( Array.isArray( currentUserRoles ) ) {
       // roles to check is an array, currentUser.roles is an array
-      return currentUserRoles?.some((allowedRole) =>
-        roles.includes(allowedRole)
+      return currentUserRoles?.some( ( allowedRole ) =>
+        roles.includes( allowedRole )
       )
-    } else if (typeof context.currentUser.roles === 'string') {
+    } else if ( typeof context.currentUser.roles === 'string' ) {
       // roles to check is an array, currentUser.roles is a string
       return roles.some(
-        (allowedRole) => context.currentUser?.roles === allowedRole
+        ( allowedRole ) => context.currentUser?.roles === allowedRole
       )
     }
   }
@@ -96,12 +114,12 @@ export const hasRole = (roles) => {
  *
  * @see https://github.com/redwoodjs/redwood/tree/main/packages/auth for examples
  */
-export const requireAuth = ({ roles }) => {
-  if (!isAuthenticated()) {
-    throw new AuthenticationError("You don't have permission to do that.")
+export const requireAuth = ( { roles } ) => {
+  if ( !isAuthenticated() ) {
+    throw new AuthenticationError( "You don't have permission to do that." )
   }
 
-  if (roles && !hasRole(roles)) {
-    throw new ForbiddenError("You don't have access to do that.")
+  if ( roles && !hasRole( roles ) ) {
+    throw new ForbiddenError( "You don't have access to do that." )
   }
 }

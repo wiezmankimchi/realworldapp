@@ -15,3 +15,5 @@ import { createLogger } from '@redwoodjs/api/logger'
  * @param {boolean} showConfig - whether to display logger configuration on initialization
  */
 export const logger = createLogger({})
+
+

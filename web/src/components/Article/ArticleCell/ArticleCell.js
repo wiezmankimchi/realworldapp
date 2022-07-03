@@ -1,4 +1,4 @@
-import Article from "../Article/Article"
+import Article from "src/components/Article/Article"
 export const QUERY = gql`
   query FindArticleQuery($id: Int!) {
     article: post(id: $id) {

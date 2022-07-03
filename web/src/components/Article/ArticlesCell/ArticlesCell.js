@@ -1,4 +1,4 @@
-import Article from 'src/components/Article'
+import Article from 'src/components/Article/Article'
 
 export const QUERY = gql`
   query ArticlesQuery {
@@ -23,7 +23,7 @@ export const Success = ({ articles }) => {
   return (
     <>
       {articles.map((article) => (
-        <Article key={article.id} article={article}/>
+        <Article key={article.id} article={article} preview={true}/>
       ))}
     </>
   )

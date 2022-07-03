@@ -8,7 +8,7 @@ export const schema = gql`
   }
 
   type Query {
-    contacts: [Contact!]! @requireAuth
+    contacts: [Contact!]! @skipAuth
     contact(id: Int!): Contact @requireAuth
   }
 
