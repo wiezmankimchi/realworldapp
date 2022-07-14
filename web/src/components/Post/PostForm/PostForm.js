@@ -4,6 +4,7 @@ import {
   FieldError,
   Label,
   TextField,
+  TextAreaField,
   Submit,
 } from '@redwoodjs/forms'
 
@@ -48,15 +49,35 @@ const PostForm = (props) => {
           Body
         </Label>
 
-        <TextField
+        <TextAreaField
           name="body"
           defaultValue={props.post?.body}
           className="rw-input"
           errorClassName="rw-input rw-input-error"
           validation={{ required: true }}
+          rows={8}
         />
 
         <FieldError name="body" className="rw-field-error" />
+
+        <Label
+          name="author"
+          className="rw-label"
+          errorClassName="rw-label rw-label-error"
+        >
+          Author
+        </Label>
+
+        <TextField
+          disabled
+          name="author"
+          defaultValue={props.post.author.firstName+" "+ props.post.author.lastName}
+          className="rw-input"
+          errorClassName="rw-input rw-input-error"
+          validation={{ required: true }}
+        />
+
+        <FieldError name="author" className="rw-field-error" />
 
         <div className="rw-button-group">
           <Submit disabled={props.loading} className="rw-button rw-button-blue">

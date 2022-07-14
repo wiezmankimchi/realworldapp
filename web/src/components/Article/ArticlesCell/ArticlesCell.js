@@ -7,6 +7,12 @@ export const QUERY = gql`
       title
       body
       createdAt
+      author {
+        id
+        firstName
+        lastName
+        ProfileImage
+      }
     }
   }
 `
@@ -23,7 +29,7 @@ export const Success = ({ articles }) => {
   return (
     <>
       {articles.map((article) => (
-        <Article key={article.id} article={article} preview={true}/>
+        <Article key={article.id} article={article} preview={true} />
       ))}
     </>
   )

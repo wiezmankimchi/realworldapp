@@ -1,6 +1,6 @@
 import Article from "src/components/Article/Article"
 export const QUERY = gql`
-  query FindArticleQuery($id: Int!) {
+  query FindArticleQuery($id: String!) {
     article: post(id: $id) {
       id
       title

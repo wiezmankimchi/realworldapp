@@ -1,4 +1,4 @@
-export const formatDatetime = ( value ) => {
+export const timeTag =  (value ) => {
   if ( value ) {
     const currentTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const userLocale =

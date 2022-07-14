@@ -1,6 +1,6 @@
 export const standard = defineScenario({
   userRole: {
-    one: { data: { updatedAt: '2022-06-18T09:03:16Z' } },
-    two: { data: { updatedAt: '2022-06-18T09:03:16Z' } },
+    one: { data: { updatedAt: '2022-07-09T17:34:46Z' } },
+    two: { data: { updatedAt: '2022-07-09T17:34:46Z' } },
   },
 })

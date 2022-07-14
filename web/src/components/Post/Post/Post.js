@@ -3,9 +3,10 @@ import humanize from 'humanize-string'
 import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 import { Link, routes, navigate } from '@redwoodjs/router'
+import { timeTag} from '/src/misc/utils'
 
 const DELETE_POST_MUTATION = gql`
-  mutation DeletePostMutation($id: Int!) {
+  mutation DeletePostMutation($id: String!) {
     deletePost(id: $id) {
       id
     }
@@ -28,16 +29,6 @@ const jsonDisplay = (obj) => {
     <pre>
       <code>{JSON.stringify(obj, null, 2)}</code>
     </pre>
-  )
-}
-
-const timeTag = (datetime) => {
-  return (
-    datetime && (
-      <time dateTime={datetime} title={datetime}>
-        {new Date(datetime).toUTCString()}
-      </time>
-    )
   )
 }
 
@@ -85,8 +76,16 @@ const Post = ({ post }) => {
               <td>{post.body}</td>
             </tr>
             <tr>
+              <th>Author</th>
+              <td><Link to={routes.user({id: post.author.id})} className=""><i className="ion-android-person"/> </Link>{post.author.firstName} {post.author.lastName}</td>
+            </tr>
+            <tr>
               <th>Created at</th>
               <td>{timeTag(post.createdAt)}</td>
+            </tr>
+            <tr>
+              <th>Updated at</th>
+              <td>{timeTag(post.updatedAt)}</td>
             </tr>
           </tbody>
         </table>

@@ -28,3 +28,14 @@ export const deletePost = ({ id }) => {
     where: { id },
   })
 }
+
+export const Post = {
+  tags: (_obj, { root }) =>
+    db.post.findUnique({ where: { id: root.id } }).tags(),
+  comments: (_obj, { root }) =>
+    db.post.findUnique({ where: { id: root.id } }).comments(),
+  author: (_obj, { root }) =>
+    db.post.findUnique({ where: { id: root.id } }).author(),
+  favoritedBy: (_obj, { root }) =>
+    db.post.findUnique({ where: { id: root.id } }).favoritedBy(),
+}

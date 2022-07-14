@@ -6,9 +6,13 @@ import {
   TextField,
   DatetimeLocalField,
   Submit,
+  PasswordField,
 } from '@redwoodjs/forms'
+import { useAuth } from '@redwoodjs/auth'
+import { toast, Toaster } from '@redwoodjs/web/toast'
 
-import { formatDatetime } from 'src/utils/formatDateTime';
+import { timeTag } from 'src/misc/utils';
+import { Redirect, routes } from '@redwoodjs/router';
 
 const convertTZ = ( date, tzString ) => {
   return new Date( ( typeof date === "string" ? new Date( date ) : date ).toLocaleString( "en-US", { timeZone: tzString } ) );
@@ -16,13 +20,36 @@ const convertTZ = ( date, tzString ) => {
 
 
 const UserForm = ( props ) => {
+  const { isAuthenticated, signUp } = useAuth()
+
+  const onNewSubmit = async ( data ) => {
+    console.log({...data})
+    const response = await signUp( { ...data } )
+
+    if ( response.message ) {
+      toast( response.message )
+    } else if ( response.error ) {
+      toast.error( response.error )
+    } else {
+      // user is signed in automatically
+      toast.success( 'Welcome!' )
+      return (
+        <Redirect to={routes.users()}/>
+      )
+    }
+  }
+
   const onSubmit = ( data ) => {
+    console.log(JSON.stringify(data))
     props.onSave( data, props?.user?.id )
   }
 
   return (
     <div className="rw-form-wrapper">
-      <Form onSubmit={ onSubmit } error={ props.error }>
+      <Toaster
+                toastOptions={{ className: 'rw-toast', duration: 6000 }}
+              />
+      <Form onSubmit={ props.new ? onNewSubmit : onSubmit } error={ props.error }>
         <FormError
           error={ props.error }
           wrapperClassName="rw-form-error-wrapper"
@@ -82,7 +109,7 @@ const UserForm = ( props ) => {
         <FieldError name="ProfileImage" className="rw-field-error" />
 
         <Label
-          name="email"
+          name="username"
           className="rw-label"
           errorClassName="rw-label rw-label-error"
         >
@@ -90,25 +117,49 @@ const UserForm = ( props ) => {
         </Label>
 
         <TextField
-          name="email"
+          name="username"
           defaultValue={ props.user?.email }
           className="rw-input"
+          placeholder="email"
           errorClassName="rw-input rw-input-error"
-          validation={ { required: true } }
+          validation={{
+            required: {
+              value: true,
+              value: /^[^@]+@[^.]+\..+$/,
+              message: 'valid email is required',
+            },
+          }}
         />
 
-        <FieldError name="email" className="rw-field-error" />
+        <FieldError name="username" className="rw-field-error" />
 
+        {props.new && <>
+          <Label
+            name="password"
+            className="rw-label"
+            errorClassName="rw-label rw-label-error"
+          >
+            Password
+          </Label>
 
-        <Label
-          name="resetTokenExpiresAt"
-          className="rw-label"
-          errorClassName="rw-label rw-label-error"
-        >
-          Reset token expires at
-        </Label>
+          <PasswordField
+            name="password"
+            defaultValue={ "enter Password"}
+            className="rw-input"
+            errorClassName="rw-input rw-input-error"
+            validation={{
+              required: {
+                value: true,
+                value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/,
+                message:
+                  'Password is required. Minimum five characters, at least one letter and one number',
+              },
+            }}
+          />
 
-        <div className="rw-label">{ formatDatetime( props.user?.resetTokenExpiresAt ) }</div>
+          <FieldError name="password" className="rw-field-error" />
+        </>}
+
         <Label
           name="updatedAt"
           className="rw-label"
@@ -117,7 +168,7 @@ const UserForm = ( props ) => {
           Updated At
         </Label>
 
-        <div className="rw-input">{ formatDatetime( props.user?.updatedAt ) }</div>
+        <div className="rw-input">{ timeTag( props.user?.updatedAt ) }</div>
         <Label
           name="createdAt"
           className="rw-label"
@@ -126,9 +177,7 @@ const UserForm = ( props ) => {
           Created At
         </Label>
 
-        <div className="rw-input">{ formatDatetime( props.user?.createdAt ) }</div>
-
-        <FieldError name="resetTokenExpiresAt" className="rw-field-error" />
+        <div className="rw-input">{ timeTag( props.user?.createdAt ) }</div>
 
         <div className="rw-button-group">
           <Submit disabled={ props.loading } className="rw-button rw-button-blue">

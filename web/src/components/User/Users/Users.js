@@ -6,6 +6,8 @@ import { Link, routes } from '@redwoodjs/router'
 
 import { QUERY } from 'src/components/User/UsersCell'
 
+import { timeTag } from '/src/misc/utils'
+
 const DELETE_USER_MUTATION = gql`
   mutation DeleteUserMutation($id: String!) {
     deleteUser(id: $id) {
@@ -14,7 +16,7 @@ const DELETE_USER_MUTATION = gql`
   }
 `
 
-const MAX_STRING_LENGTH = 150
+const MAX_STRING_LENGTH = 50
 
 const formatEnum = (values) => {
   if (values) {
@@ -39,21 +41,12 @@ const jsonTruncate = (obj) => {
   return truncate(JSON.stringify(obj, null, 2))
 }
 
-const timeTag = (datetime) => {
-  return (
-    datetime && (
-      <time dateTime={datetime} title={datetime}>
-        {new Date(datetime).toUTCString()}
-      </time>
-    )
-  )
-}
-
 const checkboxInputTag = (checked) => {
   return <input type="checkbox" checked={checked} disabled />
 }
 
 const UsersList = ({ users }) => {
+  console.log(users)
   const [deleteUser] = useMutation(DELETE_USER_MUTATION, {
     onCompleted: () => {
       toast.success('User deleted')
@@ -76,19 +69,16 @@ const UsersList = ({ users }) => {
 
   return (
     <div className="rw-segment rw-table-wrapper-responsive">
-      <MetaTags
-        title="Users"
-      />
+      <MetaTags title="Users" />
       <table className="rw-table">
         <thead>
           <tr>
             <th>Id</th>
             <th>First name</th>
             <th>Last name</th>
-            <th>Profile image</th>
             <th>Email</th>
-            <th>Reset token</th>
-            <th>Reset token expires at</th>
+            <th>Profile Image URL</th>
+            <th>Roles</th>
             <th>Updated at</th>
             <th>Created at</th>
             <th>&nbsp;</th>
@@ -100,14 +90,34 @@ const UsersList = ({ users }) => {
               <td>{truncate(user.id)}</td>
               <td>{truncate(user.firstName)}</td>
               <td>{truncate(user.lastName)}</td>
-              <td>{truncate(user.ProfileImage)}</td>
               <td>{truncate(user.email)}</td>
-              <td>{truncate(user.resetToken)}</td>
-              <td>{timeTag(user.resetTokenExpiresAt)}</td>
+              <td>{truncate(user.ProfileImage)}</td>
+              <td>
+                {user.userRoles.length==0 && <Link to={routes.newUserRole({id:user.id})} className="rw-button rw-button-small">NO ROLES</Link>}
+                {user.userRoles &&
+                  user.userRoles.map((role) =>(
+                      <Link
+                        key={role.id}
+                        to={routes.userRole({ id: role.id })}
+                        className="rw-button rw-button-small rw-button-lightgreen"
+                      >
+                        {role.name}
+                      </Link>
+
+                  ))}
+              </td>
+              {/* <td>{JSON.stringify(user.userRoles)}</td> */}
               <td>{timeTag(user.updatedAt)}</td>
               <td>{timeTag(user.createdAt)}</td>
               <td>
                 <nav className="rw-table-actions">
+                  {/* <Link
+                    to={routes.userRole({ id: userRole.id })}
+                    title={'Show userRole ' + userRole.id + ' detail'}
+                    className="rw-button rw-button-small"
+                  >
+                    User Roles
+                  </Link> */}
                   <Link
                     to={routes.user({ id: user.id })}
                     title={'Show user ' + user.id + ' detail'}

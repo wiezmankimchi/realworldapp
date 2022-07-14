@@ -4,7 +4,7 @@ import { useMutation } from '@redwoodjs/web'
 import { toast } from '@redwoodjs/web/toast'
 import { Link, routes, navigate } from '@redwoodjs/router'
 
-import { formatDatetime } from 'src/utils/formatDateTime';
+import { timeTag } from 'src/misc/utils';
 
 const DELETE_USER_MUTATION = gql`
   mutation DeleteUserMutation($id: String!) {
@@ -33,15 +33,7 @@ const jsonDisplay = (obj) => {
   )
 }
 
-// const timeTag = (datetime) => {
-//   return (
-//     datetime && (
-//       <time dateTime={datetime} title={datetime}>
-//         {new Date(datetime).toUTCString()}
-//       </time>
-//     )
-//   )
-// }
+
 
 const checkboxInputTag = (checked) => {
   return <input type="checkbox" checked={checked} disabled />
@@ -69,7 +61,7 @@ const User = ({ user }) => {
       <div className="rw-segment">
         <header className="rw-segment-header">
           <h2 className="rw-heading rw-heading-secondary">
-            User {user.id} Detail
+            User {user.firstName} {user.lastName} Detail
           </h2>
         </header>
         <table className="rw-table">
@@ -95,16 +87,12 @@ const User = ({ user }) => {
               <td>{user.email}</td>
             </tr>
             <tr>
-              <th>Reset token expires at</th>
-              <td>{ formatDatetime(user.resetTokenExpiresAt)}</td>
-            </tr>
-            <tr>
               <th>Updated at</th>
-              <td>{ formatDatetime(user.updatedAt)}</td>
+              <td>{ timeTag(user.updatedAt)}</td>
             </tr>
             <tr>
               <th>Created at</th>
-              <td>{ formatDatetime(user.createdAt)}</td>
+              <td>{ timeTag(user.createdAt)}</td>
             </tr>
           </tbody>
         </table>

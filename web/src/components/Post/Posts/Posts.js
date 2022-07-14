@@ -6,8 +6,10 @@ import { Link, routes } from '@redwoodjs/router'
 
 import { QUERY } from 'src/components/Post/PostsCell'
 
+import {timeTag} from 'src/misc/utils'
+
 const DELETE_POST_MUTATION = gql`
-  mutation DeletePostMutation($id: Int!) {
+  mutation DeletePostMutation($id: String!) {
     deletePost(id: $id) {
       id
     }
@@ -39,15 +41,7 @@ const jsonTruncate = (obj) => {
   return truncate(JSON.stringify(obj, null, 2))
 }
 
-const timeTag = (datetime) => {
-  return (
-    datetime && (
-      <time dateTime={datetime} title={datetime}>
-        {new Date(datetime).toUTCString()}
-      </time>
-    )
-  )
-}
+
 
 const checkboxInputTag = (checked) => {
   return <input type="checkbox" checked={checked} disabled />
@@ -79,20 +73,22 @@ const PostsList = ({ posts }) => {
       <table className="rw-table">
         <thead>
           <tr>
-            <th>Id</th>
             <th>Title</th>
             <th>Body</th>
+            <th>Author</th>
             <th>Created at</th>
+            <th>Updated at</th>
             <th>&nbsp;</th>
           </tr>
         </thead>
         <tbody>
           {posts.map((post) => (
             <tr key={post.id}>
-              <td>{truncate(post.id)}</td>
               <td>{truncate(post.title)}</td>
               <td>{truncate(post.body)}</td>
+              <td><Link to={routes.user({id: post.author.id})} className=""><i className="ion-android-person"/> </Link>{truncate(post.author.firstName)} {truncate(post.author.lastName)}</td>
               <td>{timeTag(post.createdAt)}</td>
+              <td>{timeTag(post.updatedAt)}</td>
               <td>
                 <nav className="rw-table-actions">
                   <Link

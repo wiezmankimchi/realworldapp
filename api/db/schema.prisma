@@ -13,37 +13,78 @@ generator client {
 // to create migrations for them and apply to your dev DB.
 // TODO: Please remove the following example:
 model Post {
+  id          String       @id @default(cuid())
+  title       String
+  body        String
+  authorId    String       @default("cl55zba5w0110o6qk9pckyonl")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime?    @updatedAt
+  tags        TagsOnPost[]
+  comments    Comment[]
+  author      User         @relation("userPosts", fields: [authorId], references: [id])
+  favoritedBy User[]       @relation("UserFavorites")
+
+}
+
+model TagsOnPost {
+  id           String   @id @default(cuid())
+  post         Post     @relation(fields: [postId], references: [id])
+  postId       String
+  tag          Tag      @relation(fields: [tagId], references: [id])
+  tagId        String
+  assignedAt   DateTime @default(now())
+  assignedById String
+  author       User     @relation(fields: [assignedById], references: [id], onDelete: Cascade)
+}
+
+model Comment {
   id        Int      @id @default(autoincrement())
-  title     String
-  body      String
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  body      String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+}
+
+model Tag {
+  id    String       @id @default(cuid())
+  name  String       @unique
+  posts TagsOnPost[]
 }
 
 model Contact {
-  id        Int      @id @default(autoincrement())
+  id        String    @id @default(cuid())
   name      String
   email     String
   message   String
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model User {
-  id                  String     @id @default(cuid())
+  id                  String    @id @default(cuid())
   firstName           String?
   lastName            String?
-  ProfileImage        String?
-  email               String     @unique
+  ProfileImage        String?   @default("https://images.unsplash.com/photo-1597223557154-721c1cecc4b0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80")
+  email               String    @unique
   hashedPassword      String
   salt                String
   resetToken          String?
   resetTokenExpiresAt DateTime?
-  userRoles           UserRole[]
-  updatedAt           DateTime   @updatedAt
-  createdAt           DateTime   @default(now())
+  updatedAt           DateTime  @updatedAt
+  createdAt           DateTime  @default(now())
+
+  userRoles UserRole[]
+  comments  Comment[]
+  posts     Post[]       @relation("userPosts")
+  favorites Post[]       @relation("UserFavorites")
+  tags      TagsOnPost[]
 }
 
 model UserRole {
-  id        String      @id @default(cuid())
+  id        String   @id @default(cuid())
   name      UserType @default(public)
   user      User?    @relation(fields: [userId], references: [id])
   userId    String?

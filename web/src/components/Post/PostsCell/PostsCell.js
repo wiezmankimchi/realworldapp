@@ -8,7 +8,14 @@ export const QUERY = gql`
       id
       title
       body
+      authorId
       createdAt
+      updatedAt
+      author{
+        id
+        firstName
+        lastName
+      }
     }
   }
 `
@@ -18,18 +25,18 @@ export const Loading = () => <div>Loading...</div>
 export const Empty = () => {
   return (
     <div className="rw-text-center">
-      {'No posts yet. '}
-      <Link to={routes.newPost()} className="rw-link">
-        {'Create one?'}
+      { 'No posts yet. ' }
+      <Link to={ routes.newPost() } className="rw-link">
+        { 'Create one?' }
       </Link>
     </div>
   )
 }
 
-export const Failure = ({ error }) => (
-  <div className="rw-cell-error">{error.message}</div>
+export const Failure = ( { error } ) => (
+  <div className="rw-cell-error">{ error.message }</div>
 )
 
-export const Success = ({ posts }) => {
-  return <Posts posts={posts} />
+export const Success = ( { posts } ) => {
+  return <Posts posts={ posts } />
 }

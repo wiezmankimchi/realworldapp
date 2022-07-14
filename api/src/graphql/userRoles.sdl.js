@@ -18,8 +18,8 @@ export const schema = gql`
   }
 
   type Query {
-    userRoles: [UserRole!]! @requireAuth
-    userRole(id: String!): UserRole @requireAuth
+    userRoles: [UserRole!]! @skipAuth
+    userRole(id: String!): UserRole @skipAuth
   }
 
   input CreateUserRoleInput {

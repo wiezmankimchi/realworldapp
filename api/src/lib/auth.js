@@ -21,17 +21,17 @@ import { logger } from 'src/lib/logger'
  * seen if someone were to open the Web Inspector in their browser.
  */
 export const getCurrentUser = async ( session ) => {
-  logger.info(`getCurrentuser --> session ${JSON.stringify(session)}`)
+  // logger.info(`getCurrentuser --> session ${JSON.stringify(session)}`)
   const userRoles = await db.userRole.findMany( {
     where: { userId: session.id },
     select: { name: true },
   } )
-  logger.info(`getCurrentuser --> userRoles ${JSON.stringify(userRoles)}`)
+  // logger.info(`getCurrentuser --> userRoles ${JSON.stringify(userRoles)}`)
 
   const roles = userRoles.map( ( role ) => {
     return role.name
   } )
-  logger.info(`getCurrentuser --> roles ${JSON.stringify(roles)}`)
+  // logger.info(`getCurrentuser --> roles ${JSON.stringify(roles)}`)
 
   const user = await db.user.findUnique( {
     where: { id: session.id },

@@ -1,14 +1,21 @@
 import Post from 'src/components/Post/Post'
 
 export const QUERY = gql`
-  query FindPostById($id: Int!) {
-    post: post(id: $id) {
-      id
-      title
-      body
-      createdAt
-    }
+query FindPostById($id: String!) {
+  post: post(id: $id) {
+    id
+    title
+    body
+    authorId
+    createdAt
+    updatedAt
+  author{
+    id
+    firstName
+    lastName
   }
+  }
+}
 `
 
 export const Loading = () => <div>Loading...</div>

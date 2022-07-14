@@ -51,13 +51,17 @@ export const Success = ({ user }) => {
   })
 
   const onSave = (input, id) => {
+    console.log(`input:${JSON.stringify(input)}, id:${id}`)
+    input.email=input.username
+    delete input.username
+    console.log(`input:${JSON.stringify(input)}, id:${id}`)
     updateUser({ variables: { id, input } })
   }
 
   return (
     <div className="rw-segment">
       <header className="rw-segment-header">
-        <h2 className="rw-heading rw-heading-secondary">Edit User {user.id}</h2>
+        <h2 className="rw-heading rw-heading-secondary">Edit User {user.firstName} {user.lastName}</h2>
       </header>
       <div className="rw-segment-main">
         <UserForm user={user} onSave={onSave} error={error} loading={loading} />

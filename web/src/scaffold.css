@@ -40,7 +40,7 @@
   @apply bg-zinc-400 bg-clip-content border-[3px] border-solid border-transparent rounded-full;
 }
 .rw-segment-header {
-  @apply bg-gray-200 text-gray-700 py-3 px-4;
+  @apply bg-gray-400 text-white py-3 px-4;
 }
 .rw-segment-main {
   @apply bg-gray-100 p-4;
@@ -103,6 +103,12 @@
 .rw-button.rw-button-green:hover {
   @apply bg-green-700;
 }
+.rw-button.rw-button-lightgreen {
+  @apply text-green-500;
+}
+.rw-button.rw-button-lightgreen:hover {
+  @apply bg-green-500 text-white no-underline;
+}
 .rw-button.rw-button-blue {
   @apply bg-blue-500 text-white;
 }
@@ -136,6 +142,10 @@
 .rw-input {
   @apply block mt-2 w-full p-2 bg-white border border-gray-200 rounded outline-none text-base;
 }
+.rw-input-disabled {
+  @apply block mt-2 w-full p-2 bg-gray-100 border border-gray-200 rounded outline-none text-base text-gray-400;
+}
+
 .rw-check-radio-items {
   @apply flex justify-items-center;
 }
@@ -175,14 +185,14 @@
 .rw-table td {
   @apply bg-white text-gray-900;
 }
-.rw-table tr:nth-child(odd) td,
-.rw-table tr:nth-child(odd) th {
-  @apply bg-gray-50;
+.rw-table tbody tr:nth-child(odd) td,
+.rw-table tbody tr:nth-child(odd) th {
+  @apply bg-gray-200;
 }
 .rw-table thead tr {
-  @apply bg-gray-200 text-gray-600;
+  @apply text-white bg-gray-500;
 }
-.rw-table th {
+.rw-table thead th {
   @apply font-semibold text-left;
 }
 .rw-table thead th {
@@ -209,19 +219,19 @@
   @apply bg-transparent;
 }
 .rw-table-actions .rw-button:hover {
-  @apply bg-gray-500 text-white;
+  @apply bg-gray-500 text-white no-underline;
 }
 .rw-table-actions .rw-button-blue {
   @apply text-blue-500;
 }
 .rw-table-actions .rw-button-blue:hover {
-  @apply bg-blue-500 text-white;
+  @apply bg-blue-500 text-white no-underline;
 }
 .rw-table-actions .rw-button-red {
   @apply text-red-600;
 }
 .rw-table-actions .rw-button-red:hover {
-  @apply bg-red-600 text-white;
+  @apply bg-red-600 text-white no-underline;
 }
 .rw-text-center {
   @apply text-center;
@@ -234,4 +244,7 @@
 }
 .rw-login-link {
   @apply mt-4 text-gray-600 text-sm text-center w-full;
+}
+.rw-text-blue {
+  @apply text-blue-500;
 }
